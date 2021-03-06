@@ -21,6 +21,7 @@ import {
   TorrentKeys,
 } from '../../api';
 import { useUiState } from './ui-state';
+import perspective, {Table} from "@finos/perspective";
 
 const TORRENT_SORT_KEY = 'torrentListSortFilter';
 
@@ -37,6 +38,57 @@ const initialTorrentSortFilterState: SortFilterStateValue = {
   search: '',
   category: '__all__',
 };
+const perspectiveWorker = perspective.shared_worker();
+const tableProvider = perspectiveWorker.table({
+	added_on: "integer",
+	amount_left: "integer",
+	auto_tmm: "boolean",
+	availability: "float",
+	category: "string",
+	completed: "integer",
+	completion_on: "integer",
+	content_path: "string",
+	dl_limit: "integer",
+	dlspeed: "integer",
+	downloaded: "integer",
+	downloaded_session: "integer",
+	eta: "integer",
+	f_l_piece_prio: "boolean",
+	force_start: "boolean",
+	hash: "string",
+	last_activity: "integer",
+	magnet_uri: "string",
+	max_ratio: "float",
+	max_seeding_time: "integer",
+	name: "string",
+	num_complete: "integer",
+	num_incomplete: "integer",
+	num_leechs: "integer",
+	num_seeds: "integer",
+	priority: "integer",
+	progress: "integer",
+	ratio: "float",
+	ratio_limit: "float",
+	save_path: "string",
+	seeding_time_limit: "integer",
+	seen_complete: "integer",
+	seq_dl: "boolean",
+	size: "integer",
+	state: "string",
+	super_seeding: "boolean",
+	tags: "string",
+	time_active: "integer",
+	total_size: "integer",
+	tracker: "string",
+	up_limit: "float",
+	uploaded: "integer",
+	uploaded_session: "integer",
+	upspeed: "float"
+	});
+
+const initialGraphState = { 
+    table: tableProvider,
+}
 
 const ServerContext = createContext(initialServerState);
 const CategoryContext = createContext(initialCategoryState);
@@ -47,6 +99,7 @@ const TorrentSortFilterContext = createContext(([
   initialTorrentSortFilterState,
   undefined,
 ] as unknown) as SortFilterState);
+const GraphContext = createContext(initialGraphState);
 
 export const AppContextProvider: FC = ({ children }) => {
   const intl = useIntl();
@@ -60,6 +113,7 @@ export const AppContextProvider: FC = ({ children }) => {
       storageGet(TORRENT_SORT_KEY, {} as SortFilterStateValue)
     )
   );
+  const [graphState, setGraphState] = useState(initialGraphState);
   const torrentSortFilterStateRef = useRef(torrentSortFilterState);
   const categoryStateRef = useRef(categoryState);
 
@@ -129,6 +183,16 @@ export const AppContextProvider: FC = ({ children }) => {
           for (const hash in torrents) {
             torrents[hash].hash = hash;
           }
+	  console.log(torrents);
+	  const torrentValues = Object.values(torrents);
+	  initialGraphState['table'].view().to_json().then((x) => {console.log(x)});
+          tableProvider.update(torrentValues);
+	  /*
+	  setGraphState({ 
+	    table: tableProvider
+          });
+	  */
+
           setTorrentsState({
             collection: torrents as TorrentCollection,
             hashList: torrentHashes,
@@ -136,6 +200,15 @@ export const AppContextProvider: FC = ({ children }) => {
           });
           setSortFilterRefId(Date.now());
         } else if (torrentHashes.length > 0) {
+	  console.log(torrents);
+	  const torrentValues = Object.values(torrents);
+	  initialGraphState['table'].view().to_json().then((x) => {console.log(x)});
+          tableProvider.update(torrentValues);
+	  /*
+	  setGraphState({ 
+	    table: tableProvider
+          });
+	  */
           setTorrentsState(s => {
             return produce(s, draft => {
               let shouldUpdateHashOrder = false;
@@ -286,6 +359,7 @@ export const AppContextProvider: FC = ({ children }) => {
 
   return (
     <ServerContext.Provider value={serverState}>
+      <GraphContext.Provider value = {graphState}>
       <TorrentsContext.Provider value={torrentsState}>
         <TorrentHashListContext.Provider value={torrentsState.hashList}>
           <TorrentViewHashListContext.Provider value={torrentsState.viewHashList}>
@@ -295,6 +369,7 @@ export const AppContextProvider: FC = ({ children }) => {
           </TorrentViewHashListContext.Provider>
         </TorrentHashListContext.Provider>
       </TorrentsContext.Provider>
+      </GraphContext.Provider>
     </ServerContext.Provider>
   );
 };
@@ -306,6 +381,10 @@ export const useServerState = () => {
 export const useTorrentsState = () => {
   return useContext(TorrentsContext);
 };
+
+export const useGraphState = () => {
+  return useContext(GraphContext);
+}
 
 export const useTorrentList = () => {
   return useContext(TorrentHashListContext);

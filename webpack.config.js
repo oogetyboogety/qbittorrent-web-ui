@@ -3,6 +3,7 @@ const Path = require('path');
 const Fs = require('fs');
 const Webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const PerspectivePlugin = require("@finos/perspective-webpack-plugin");
 const { merge: mergeConfigs } = require('webpack-merge');
 const { getConfig: getDevConfig } = require('./webpack/dev.config');
 const { getConfig: getProdConfig } = require('./webpack/prod.config');
@@ -58,11 +59,16 @@ module.exports = ({ production = false }) => {
               loader: 'babel-loader',
             },
           },
+	  {
+                test: /\.css$/,
+                use: [{loader: "style-loader"}, {loader: "css-loader"}]
+          }
         ],
       },
       plugins: [
         new Webpack.DefinePlugin(envVariables),
         new HtmlWebpackPlugin({ templateContent: htmlTemplateContent }),
+        new PerspectivePlugin()
       ],
     }
   );
