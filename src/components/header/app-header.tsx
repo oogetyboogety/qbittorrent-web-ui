@@ -2,7 +2,8 @@ import { ChangeEventHandler, FC, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { mStyles } from '../common';
 import { useTorrentsOperationMutation } from '../data';
-import { Box, IconButton, Input, InputAdornment, Typography } from '../material-ui-core';
+import { Box, IconButton, Input, InputAdornment, Typography, Tab } from '@material-ui/core';
+import { TabList } from '@material-ui/lab';
 import {
   AddIcon,
   ChevronLeftIcon,
@@ -85,7 +86,7 @@ const useStyles = mStyles(({ spacing, breakpoints }) => ({
   },
 }));
 
-export const AppHeader: FC<{ qbtVersion: string }> = ({ qbtVersion }) => {
+export const AppHeader: FC<{ qbtVersion: string, tabChangeHandler: Function }> = ({ qbtVersion, tabChangeHandler }) => {
   const classes = useStyles();
   const intl = useIntl();
   const [{ torrentListSelection }, { updateAddNewDialogOpen }] = useUiState();
@@ -133,6 +134,13 @@ export const AppHeader: FC<{ qbtVersion: string }> = ({ qbtVersion }) => {
         <div className={classes.headerTitle}>
           <Typography variant="body1">qBittorrent {qbtVersion}</Typography>
         </div>
+      </div>
+      <div>
+        <TabList onChange={tabChangeHandler} aria-label="tabs">
+	  <Tab label="Torrents" value="1"/>
+	  <Tab label="Graph" value="2"/>
+
+	</TabList>
       </div>
       <div className={classes.actionButtons}>
         <div>
