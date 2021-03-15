@@ -29,12 +29,13 @@ export const MainLayout: FC<{
   sideBar?: ReactElement;
   qbtVersion: string;
   className?: string;
-}> = ({ header, statusBar, sideBar = <div />, qbtVersion, children, className }) => {
+  tabChangeHandler: Function;
+}> = ({ header, statusBar, sideBar = <div />, qbtVersion, children, className, tabChangeHandler }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.mainLayoutRoot}>
-      <AppBar position="static">{header || <AppHeader qbtVersion={qbtVersion} />}</AppBar>
+      <AppBar position="static">{header || <AppHeader qbtVersion={qbtVersion} tabChangeHandler={tabChangeHandler}/>}</AppBar>
       <div className={classes.mainLayoutContainer}>
         {sideBar}
         <div className={clsx(classes.appChildren, className)}>{children}</div>

@@ -12,7 +12,7 @@ import {
 } from '../material-ui-core';
 import { LockOpenIcon } from '../material-ui-icons';
 import { mStyles } from '../common';
-import { AppHeader } from '../header/app-header';
+import { LoginHeader } from './login-header';
 import { MainLayout } from '../layout';
 import { useAppVersionQuery, useLoginMutation } from '../data';
 import { storageGet, storageRemove, storageSet } from '../../utils';
@@ -76,7 +76,7 @@ export const Login: FC = () => {
   }, [isSuccess, appVersion]);
 
   return (
-    <MainLayout header={<AppHeader qbtVersion="" />} qbtVersion="" className={classes.container}>
+    <MainLayout header={<LoginHeader />} qbtVersion="" className={classes.container}>
       <section className={classes.loginRoot}>
         <Box marginBottom={2} component="header">
           <Typography variant="h4" component="h1">

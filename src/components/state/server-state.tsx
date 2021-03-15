@@ -46,7 +46,7 @@ const tableProvider = perspectiveWorker.table({
 	availability: "float",
 	category: "string",
 	completed: "integer",
-	completion_on: "integer",
+	completion_on: "datetime",
 	content_path: "string",
 	dl_limit: "integer",
 	dlspeed: "integer",
@@ -56,7 +56,7 @@ const tableProvider = perspectiveWorker.table({
 	f_l_piece_prio: "boolean",
 	force_start: "boolean",
 	hash: "string",
-	last_activity: "integer",
+	last_activity: "datetime",
 	magnet_uri: "string",
 	max_ratio: "float",
 	max_seeding_time: "integer",
@@ -186,7 +186,7 @@ export const AppContextProvider: FC = ({ children }) => {
 	  console.log(torrents);
 	  const torrentValues = Object.values(torrents);
 	  initialGraphState['table'].view().to_json().then((x) => {console.log(x)});
-          tableProvider.update(torrentValues);
+          //tableProvider.update(torrentValues);
 	  /*
 	  setGraphState({ 
 	    table: tableProvider
@@ -203,12 +203,25 @@ export const AppContextProvider: FC = ({ children }) => {
 	  console.log(torrents);
 	  const torrentValues = Object.values(torrents);
 	  initialGraphState['table'].view().to_json().then((x) => {console.log(x)});
-          tableProvider.update(torrentValues);
 	  /*
 	  setGraphState({ 
 	    table: tableProvider
           });
 	  */
+	  torrentHashes.forEach(hash => {
+                const torrent = torrents[hash];
+		torrent.hash = hash;
+
+		//convert all the timestamps to milliseconds, or perspective doesn't read them
+		if(typeof torrent.completion_on != "undefined") {
+		torrent.completion_on *= 1000;
+		}
+		if(typeof torrent.last_activity != "undefined") {
+		torrent.last_activity = torrent.last_activity*1000;
+		}
+		console.log(torrent);
+		tableProvider.update([torrent]);
+	  });
           setTorrentsState(s => {
             return produce(s, draft => {
               let shouldUpdateHashOrder = false;
@@ -245,6 +258,8 @@ export const AppContextProvider: FC = ({ children }) => {
                 if (shouldUpdateHashOrder) {
                   setSortFilterRefId(Date.now());
                 }
+
+
               });
             });
           });
