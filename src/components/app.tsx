@@ -36,7 +36,7 @@ export const App: FC = () => {
         <TorrentsContainer />
       </TabPanel>
 
-      <TabPanel value="2">
+      <TabPanel value="2" className={classes.tabContainer}>
 
         <PerspectiveViewer />
       </TabPanel>
