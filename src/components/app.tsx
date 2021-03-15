@@ -11,9 +11,11 @@ import { TabPanel, TabContext } from '@material-ui/lab';
 
 const useStyles = mStyles(() => ({
   torrentContainer: {
-    width: '100%',
-    flex: '1 0 auto',
+    height: '100%',
   },
+  tabContainer: {
+    height: '100%',
+    }
 }));
 
 export const App: FC = () => {
@@ -29,16 +31,16 @@ export const App: FC = () => {
   return (
     <TabContext value={value}>
     <MainLayout qbtVersion={qbtVersion || ''} sideBar={<Sidebar />} tabChangeHandler={handleTabChange}>
-      <TabPanel value="1">
       <div className={classes.torrentContainer}>
+      <TabPanel value="1" className={classes.tabContainer}> 
         <TorrentsContainer />
-      </div>
       </TabPanel>
 
       <TabPanel value="2">
 
         <PerspectiveViewer />
       </TabPanel>
+      </div>
     </MainLayout>
     </TabContext>
   );
