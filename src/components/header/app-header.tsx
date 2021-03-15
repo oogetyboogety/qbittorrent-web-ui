@@ -1,4 +1,4 @@
-import { ChangeEventHandler, FC, useMemo } from 'react';
+import { ChangeEvent, ChangeEventHandler, FC, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { mStyles } from '../common';
 import { useTorrentsOperationMutation } from '../data';
@@ -86,7 +86,7 @@ const useStyles = mStyles(({ spacing, breakpoints }) => ({
   },
 }));
 
-export const AppHeader: FC<{ qbtVersion: string, tabChangeHandler: Function }> = ({ qbtVersion, tabChangeHandler }) => {
+export const AppHeader: FC<{ qbtVersion: string, tabChangeHandler?: (event: ChangeEvent<{}>, value: any) => void }> = ({ qbtVersion, tabChangeHandler }) => {
   const classes = useStyles();
   const intl = useIntl();
   const [{ torrentListSelection }, { updateAddNewDialogOpen }] = useUiState();

@@ -1,4 +1,4 @@
-import { FC , useState } from 'react';
+import { FC , useState, ChangeEvent } from 'react';
 import { mStyles } from './common';
 import { useAppVersionQuery } from './data';
 import { MainLayout } from './layout';
@@ -24,7 +24,7 @@ export const App: FC = () => {
   const [value, setValue] = useState('1');
 
 
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (event: ChangeEvent<{}>, newValue: any) => {
    setValue(newValue);
   };
 

@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { FC, ReactElement, useState } from 'react';
+import { FC, ReactElement, useState, ChangeEvent } from 'react';
 import AppHeader from '../header';
 import { AppStatusBar } from '../app-statusbar';
 import { mStyles } from '../common';
@@ -40,7 +40,7 @@ export const MainLayout: FC<{
   sideBar?: ReactElement;
   qbtVersion: string;
   className?: string;
-  tabChangeHandler: Function;
+  tabChangeHandler?: (event: ChangeEvent<{}>, value: any) => void;
 }> = ({ header, statusBar, sideBar = <div />, qbtVersion, children, className, tabChangeHandler }) => {
   const classes = useStyles();
 
